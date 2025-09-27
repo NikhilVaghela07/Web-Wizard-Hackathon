@@ -2,7 +2,9 @@
 
 A beautiful, modern real-time chat application built with the MERN stack and enhanced with **ShadCN UI** components for a truly professional user experience.
 
-![Professional Chat Interface](https://via.placeholder.com/800x400/667eea/ffffff?text=Professional+Chat+Interface)
+## Screenshots
+
+updated soon
 
 ## ✨ Features
 
