@@ -4,8 +4,12 @@ A beautiful, modern real-tim- **Loading States** - Professional loading indicato
 
 ## 👥 Team Details
 
-### Team Leader
-**Nikhil Vaghela**   application built with the MERN stack and enhanced with **ShadCN UI** components for a truly professional user experience.
+| Role | Name | ID | Email | GitHub |
+|------|------|-------|-------|--------|
+| **Team Leader** | Nikhil Vaghela | 23DCE124 | - | [@NikhilVaghela07](https://github.com/NikhilVaghela07) |
+| Team Member | Femil Ranparia | 23DCE102 | - | [@FemilRanparia](https://github.com/FemilRanparia) |
+| Team Member | Hitarth Shukla | 23DCE112 | 23dce112@charusat.edu.in | [@HitarthShukla](https://github.com/HitarthShukla) |
+| Team Member | Kaustav Das | 23DCE020 | 23dce020@charusat.edu.in | [@kaustav1703](https://github.com/kaustav1703) |
 
 ## 📸 Screenshots
 
@@ -94,29 +98,6 @@ A beautiful, modern real-tim- **Loading States** - Professional loading indicato
 - **Scrollable Message Area** - Smooth auto-scroll to latest messages
 - **Character Counter** - Real-time feedback on message length
 - **Loading States** - Professional loading indicators throughout
-
-## � Team Details
-
-### Team Leader
-**Nikhil Vaghela**  
-- **ID:** 23DCE124  
-- **GitHub:** [@NikhilVaghela07](https://github.com/NikhilVaghela07)
-
-### Team Members
-
-**Femil Ranparia**  
-- **ID:** 23DCE102  
-- **GitHub:** [@FemilRanparia](https://github.com/FemilRanparia)
-
-**Hitarth Shukla**  
-- **ID:** 23DCE112  
-- **Email:** 23dce112@charusat.edu.in  
-- **GitHub:** [@HitarthShukla](https://github.com/HitarthShukla)
-
-**Kaustav Das**  
-- **ID:** 23DCE020  
-- **Email:** 23dce020@charusat.edu.in  
-- **GitHub:** [@kaustav1703](https://github.com/kaustav1703)
 
 ## �🛠️ Tech Stack
 
