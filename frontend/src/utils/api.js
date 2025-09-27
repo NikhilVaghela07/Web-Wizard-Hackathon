@@ -42,9 +42,16 @@ export const authAPI = {
   login: (credentials) => api.post('/auth/login', credentials),
   logout: () => api.post('/auth/logout'),
   getProfile: () => api.get('/auth/me'),
+  updateProfile: (userData) => api.put('/auth/profile', userData),
+  changePassword: (passwordData) => api.put('/auth/change-password', passwordData),
   getUsers: () => api.get('/auth/users'),
   verifyEmail: (email, otp) => api.post('/auth/verify-email', { email, otp }),
   resendOTP: (email) => api.post('/auth/resend-otp', { email }),
+  uploadProfilePicture: (formData) => api.post('/auth/profile-picture', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  }),
 };
 
 // Messages API calls

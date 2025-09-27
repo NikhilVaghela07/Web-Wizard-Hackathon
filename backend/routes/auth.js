@@ -2,7 +2,10 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
+const { uploadProfilePicture } = require('../middleware/upload');
 const { generateOTP, sendOTPEmail, sendWelcomeEmail } = require('../utils/emailService');
+const path = require('path');
+const fs = require('fs');
 
 const router = express.Router();
 
@@ -141,7 +144,8 @@ router.post('/login', async (req, res) => {
         id: user._id,
         username: user.username,
         email: user.email,
-        isEmailVerified: user.isEmailVerified
+        isEmailVerified: user.isEmailVerified,
+        profilePicture: user.profilePicture
       }
     });
 
@@ -193,7 +197,8 @@ router.get('/me', auth, async (req, res) => {
         username: req.user.username,
         email: req.user.email,
         isOnline: req.user.isOnline,
-        lastSeen: req.user.lastSeen
+        lastSeen: req.user.lastSeen,
+        profilePicture: req.user.profilePicture
       }
     });
   } catch (error) {
@@ -321,6 +326,154 @@ router.post('/resend-otp', async (req, res) => {
     }
     
     res.status(500).json({ message: 'Server error while resending OTP' });
+  }
+});
+
+// @route   PUT /api/auth/profile
+// @desc    Update user profile
+// @access  Private
+router.put('/profile', auth, async (req, res) => {
+  try {
+    const { username } = req.body;
+
+    if (!username || username.trim().length < 3) {
+      return res.status(400).json({ 
+        message: 'Username must be at least 3 characters long' 
+      });
+    }
+
+    // Check if username is already taken by another user
+    const existingUser = await User.findOne({ 
+      username: username.trim(),
+      _id: { $ne: req.user.id }
+    });
+
+    if (existingUser) {
+      return res.status(400).json({ message: 'Username already taken' });
+    }
+
+    // Update user
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user.id,
+      { username: username.trim() },
+      { new: true, runValidators: true }
+    );
+
+    res.json({
+      message: 'Profile updated successfully',
+      user: updatedUser
+    });
+
+  } catch (error) {
+    console.error('Profile update error:', error);
+    res.status(500).json({ message: 'Server error while updating profile' });
+  }
+});
+
+// @route   PUT /api/auth/change-password
+// @desc    Change user password
+// @access  Private
+router.put('/change-password', auth, async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ 
+        message: 'Current password and new password are required' 
+      });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ 
+        message: 'New password must be at least 6 characters long' 
+      });
+    }
+
+    // Get current user
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Verify current password
+    const isCurrentPasswordValid = await user.comparePassword(currentPassword);
+    if (!isCurrentPasswordValid) {
+      return res.status(400).json({ message: 'Current password is incorrect' });
+    }
+
+    // Update password
+    user.password = newPassword;
+    await user.save();
+
+    res.json({ message: 'Password updated successfully' });
+
+  } catch (error) {
+    console.error('Password change error:', error);
+    res.status(500).json({ message: 'Server error while changing password' });
+  }
+});
+
+// @route   POST /api/auth/profile-picture
+// @desc    Upload profile picture
+// @access  Public (but requires email verification)
+router.post('/profile-picture', uploadProfilePicture, async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ message: 'Please upload an image file' });
+    }
+
+    // Find user by email
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) {
+      // Clean up uploaded file if user not found
+      fs.unlinkSync(req.file.path);
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if user's email is verified
+    if (!user.isEmailVerified) {
+      // Clean up uploaded file if user not verified
+      fs.unlinkSync(req.file.path);
+      return res.status(400).json({ message: 'Please verify your email first' });
+    }
+
+    // Delete old profile picture if exists
+    if (user.profilePicture) {
+      const oldImagePath = path.join(__dirname, '../uploads/profiles', path.basename(user.profilePicture));
+      if (fs.existsSync(oldImagePath)) {
+        fs.unlinkSync(oldImagePath);
+      }
+    }
+
+    // Update user's profile picture
+    const profilePictureUrl = `/uploads/profiles/${req.file.filename}`;
+    user.profilePicture = profilePictureUrl;
+    await user.save();
+
+    res.status(200).json({
+      message: 'Profile picture uploaded successfully',
+      profilePicture: profilePictureUrl
+    });
+
+  } catch (error) {
+    console.error('Profile picture upload error:', error);
+    
+    // Clean up uploaded file on error
+    if (req.file && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
+    
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ message: 'File too large. Maximum size is 5MB' });
+    }
+    
+    res.status(500).json({ message: 'Server error while uploading profile picture' });
   }
 });
 

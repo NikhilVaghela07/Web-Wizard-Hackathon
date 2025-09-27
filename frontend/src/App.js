@@ -9,6 +9,7 @@ import Register from './pages/Register';
 import EmailVerification from './pages/EmailVerification';
 import Chat from './pages/Chat';
 import RoomDashboard from './pages/RoomDashboard';
+import Profile from './pages/Profile';
 import LoadingSpinner from './components/LoadingSpinner';
 
 // Protected Route component
@@ -73,6 +74,15 @@ const AppContent = () => {
             element={
               <ProtectedRoute>
                 <RoomDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          
+          <Route 
+            path="/profile" 
+            element={
+              <ProtectedRoute>
+                <Profile />
               </ProtectedRoute>
             } 
           />

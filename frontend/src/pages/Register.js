@@ -4,7 +4,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card";
-import { MessageCircle, Loader2, Mail, Lock, User, AlertCircle, Shield, CheckCircle, ArrowLeft } from "lucide-react";
+import { MessageCircle, Loader2, Mail, Lock, User, AlertCircle, Shield, CheckCircle, ArrowLeft, Camera, Upload, UserCircle } from "lucide-react";
 import { Alert, AlertDescription } from "../components/ui/alert";
 import { authAPI } from '../utils/api';
 
@@ -20,6 +20,8 @@ const Register = () => {
   const [error, setError] = useState('');
   const [showVerification, setShowVerification] = useState(false);
   const [verificationSuccess, setVerificationSuccess] = useState(false);
+  const [showProfilePicture, setShowProfilePicture] = useState(false);
+  const [profileComplete, setProfileComplete] = useState(false);
   
   // Verification states
   const [otp, setOtp] = useState('');
@@ -28,6 +30,12 @@ const Register = () => {
   const [verifyError, setVerifyError] = useState('');
   const [verifySuccess, setVerifySuccess] = useState('');
   const [countdown, setCountdown] = useState(0);
+
+  // Profile picture states
+  const [profilePicture, setProfilePicture] = useState(null);
+  const [profilePicturePreview, setProfilePicturePreview] = useState(null);
+  const [uploadLoading, setUploadLoading] = useState(false);
+  const [profileError, setProfileError] = useState('');
 
   // Countdown timer for resend button
   React.useEffect(() => {
@@ -126,8 +134,9 @@ const Register = () => {
 
     try {
       await authAPI.verifyEmail(formData.email, otp);
-      setVerificationSuccess(true);
-      setVerifySuccess('🎉 Email verified successfully! You can now login to your account.');
+      setShowVerification(false);
+      setShowProfilePicture(true);
+      setVerifySuccess('Email verified successfully!');
     } catch (err) {
       setVerifyError(err.response?.data?.message || 'Verification failed. Please try again.');
     } finally {
@@ -163,14 +172,76 @@ const Register = () => {
   const handleBackToRegistration = () => {
     setShowVerification(false);
     setVerificationSuccess(false);
+    setShowProfilePicture(false);
+    setProfileComplete(false);
     setOtp('');
     setVerifyError('');
     setVerifySuccess('');
     setCountdown(0);
+    setProfilePicture(null);
+    setProfilePicturePreview(null);
+    setProfileError('');
   };
 
-  // Success screen after verification
-  if (verificationSuccess) {
+  const handleProfilePictureChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        setProfileError('Please select a valid image file');
+        return;
+      }
+      
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setProfileError('Image size should be less than 5MB');
+        return;
+      }
+      
+      setProfileError('');
+      setProfilePicture(file);
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setProfilePicturePreview(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleUploadProfilePicture = async () => {
+    setUploadLoading(true);
+    setProfileError('');
+    
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('profilePicture', profilePicture);
+      formDataToSend.append('email', formData.email);
+      
+      await authAPI.uploadProfilePicture(formDataToSend);
+      setProfileComplete(true);
+    } catch (err) {
+      setProfileError(err.response?.data?.message || 'Failed to upload profile picture');
+    } finally {
+      setUploadLoading(false);
+    }
+  };
+
+  const handleSkipProfilePicture = () => {
+    setProfileComplete(true);
+  };
+
+  const handleBackToVerification = () => {
+    setShowProfilePicture(false);
+    setShowVerification(true);
+    setProfilePicture(null);
+    setProfilePicturePreview(null);
+    setProfileError('');
+  };
+
+  // Success screen after profile setup
+  if (profileComplete) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
         <div className="w-full max-w-md space-y-6">
@@ -317,6 +388,114 @@ const Register = () => {
               <div className="text-xs text-gray-500 text-center space-y-1">
                 <p>The verification code will expire in 10 minutes.</p>
                 <p>Check your spam folder if you don't see the email.</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  // Profile picture upload screen
+  if (showProfilePicture) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
+        <div className="w-full max-w-md space-y-6">
+          <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+            <CardHeader className="space-y-1 text-center">
+              <div className="flex justify-center mb-4">
+                <div className="p-3 bg-purple-100 rounded-full">
+                  <Camera className="h-6 w-6 text-purple-600" />
+                </div>
+              </div>
+              <CardTitle className="text-2xl font-bold">Complete Your Profile</CardTitle>
+              <CardDescription>
+                Add a profile picture to help others recognize you
+                <br />
+                <span className="text-sm text-muted-foreground">(Optional - you can skip this step)</span>
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {profileError && (
+                <Alert variant="destructive">
+                  <AlertDescription>{profileError}</AlertDescription>
+                </Alert>
+              )}
+
+              <div className="flex flex-col items-center space-y-4">
+                <div className="relative">
+                  <div className="w-24 h-24 rounded-full bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden">
+                    {profilePicturePreview ? (
+                      <img 
+                        src={profilePicturePreview} 
+                        alt="Profile preview" 
+                        className="w-full h-full object-cover rounded-full"
+                      />
+                    ) : (
+                      <UserCircle className="w-12 h-12 text-gray-400" />
+                    )}
+                  </div>
+                  <label htmlFor="profilePicture" className="absolute bottom-0 right-0 bg-purple-600 text-white rounded-full p-1.5 cursor-pointer hover:bg-purple-700 transition-colors">
+                    <Upload className="w-3 h-3" />
+                  </label>
+                  <input
+                    id="profilePicture"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleProfilePictureChange}
+                    className="hidden"
+                  />
+                </div>
+                
+                <p className="text-sm text-center text-muted-foreground">
+                  Click the upload button to select an image
+                  <br />
+                  Maximum file size: 5MB
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                {profilePicture && (
+                  <Button 
+                    onClick={handleUploadProfilePicture}
+                    disabled={uploadLoading}
+                    className="w-full"
+                  >
+                    {uploadLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Uploading...
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="mr-2 h-4 w-4" />
+                        Upload Profile Picture
+                      </>
+                    )}
+                  </Button>
+                )}
+                
+                <Button 
+                  variant="outline"
+                  onClick={handleSkipProfilePicture}
+                  className="w-full"
+                  disabled={uploadLoading}
+                >
+                  Skip for Now
+                </Button>
+              </div>
+
+              <div className="pt-4 border-t">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={handleBackToVerification}
+                  className="w-full"
+                  disabled={uploadLoading}
+                >
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Back to Verification
+                </Button>
               </div>
             </CardContent>
           </Card>

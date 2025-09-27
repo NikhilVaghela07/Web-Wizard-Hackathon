@@ -41,7 +41,8 @@ import {
   MoreVertical,
   Crown,
   Calendar,
-  UserPlus
+  UserPlus,
+  User
 } from "lucide-react";
 
 const RoomDashboard = () => {
@@ -198,6 +199,10 @@ const RoomDashboard = () => {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => navigate('/profile')}>
+                <User className="w-4 h-4 mr-2" />
+                My Profile
+              </DropdownMenuItem>
               <DropdownMenuItem>
                 <Settings className="w-4 h-4 mr-2" />
                 Settings
