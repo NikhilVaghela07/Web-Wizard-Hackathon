@@ -4,12 +4,12 @@ A beautiful, modern real-tim- **Loading States** - Professional loading indicato
 
 ## 👥 Team Details
 
-| Role | Name | ID | Email | GitHub |
-|------|------|-------|-------|--------|
-| **Team Leader** | Nikhil Vaghela | 23DCE124 | 23dce124@charusat.edu.in | [@NikhilVaghela07](https://github.com/NikhilVaghela07) |
-| Team Member | Femil Ranparia | 23DCE102 | 23dce102@charusat.edu.in | [@FemilRanparia](https://github.com/FemilRanparia) |
-| Team Member | Hitarth Shukla | 23DCE112 | 23dce112@charusat.edu.in | [@HitarthShukla](https://github.com/HitarthShukla) |
-| Team Member | Kaustav Das | 23DCE020 | 23dce020@charusat.edu.in | [@kaustav1703](https://github.com/kaustav1703) |
+| Role | Name | ID | Email | GitHub | Specialization |
+|------|------|-------|-------|--------|----------------|
+| **Team Leader** | Nikhil Vaghela | 23DCE124 | 23dce124@charusat.edu.in | [@NikhilVaghela07](https://github.com/NikhilVaghela07) | Frontend |
+| Team Member | Femil Ranparia | 23DCE102 | 23dce102@charusat.edu.in | [@FemilRanparia](https://github.com/FemilRanparia) | Frontend |
+| Team Member | Hitarth Shukla | 23DCE112 | 23dce112@charusat.edu.in | [@HitarthShukla](https://github.com/HitarthShukla) | Backend |
+| Team Member | Kaustav Das | 23DCE020 | 23dce020@charusat.edu.in | [@kaustav1703](https://github.com/kaustav1703) | Backend |
 
 ## 📸 Screenshots
 
