@@ -2,6 +2,12 @@
 
 A beautiful, modern real-time chat application built with the MERN stack and enhanced with **ShadCN UI** components for a truly professional user experience.
 
+## 🎥 Project Demo
+
+**Watch the complete project demonstration:** [Project Video](https://drive.google.com/file/d/1eHvsz7MIAzkVx07PJBqUniPO6I9dRxDO/view?usp=drive_link)
+
+## 👥 Team Details
+
 ## 👥 Team Details
 
 | Role | Name | ID | Email | GitHub | Specialization |
