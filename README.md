@@ -8,8 +8,6 @@ A beautiful, modern real-time chat application built with the MERN stack and enh
 
 ## 👥 Team Details
 
-## 👥 Team Details
-
 | Role | Name | ID | Email | GitHub | Specialization |
 |------|------|-------|-------|--------|----------------|
 | **Team Leader** | Nikhil Vaghela | 23DCE124 | 23dce124@charusat.edu.in | [@NikhilVaghela07](https://github.com/NikhilVaghela07) | Frontend |
