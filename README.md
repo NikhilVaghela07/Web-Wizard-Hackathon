@@ -1,10 +1,6 @@
-# 🚀 Chatrix - Professional Real-Time Chat Application
+# 🚀 Chatrix Hub - Professional Real-Time Chat Application
 
 A beautiful, modern real-time chat application built with the MERN stack and enhanced with **ShadCN UI** components for a truly professional user experience.
-
-## Screenshots
-
-updated soon
 
 ## ✨ Features
 
