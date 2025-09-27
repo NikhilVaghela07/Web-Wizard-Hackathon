@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card";
-import { MessageCircle, Loader2, Mail, Lock, User } from "lucide-react";
+import { MessageCircle, Loader2, Mail, Lock, User, AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "../components/ui/alert";
+import { authAPI } from '../utils/api';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -15,8 +16,10 @@ const Register = () => {
     confirmPassword: '',
   });
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   
-  const { register, isLoading, error } = useAuth();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,7 +28,6 @@ const Register = () => {
       [name]: value
     }));
     
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -37,32 +39,24 @@ const Register = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    // Username validation
     if (!formData.username.trim()) {
       newErrors.username = 'Username is required';
     } else if (formData.username.trim().length < 3) {
       newErrors.username = 'Username must be at least 3 characters';
-    } else if (formData.username.trim().length > 20) {
-      newErrors.username = 'Username cannot exceed 20 characters';
-    } else if (!/^[a-zA-Z0-9_]+$/.test(formData.username.trim())) {
-      newErrors.username = 'Username can only contain letters, numbers, and underscores';
     }
 
-    // Email validation
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Email is invalid';
     }
 
-    // Password validation
     if (!formData.password) {
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters';
     }
 
-    // Confirm password validation
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = 'Please confirm your password';
     } else if (formData.password !== formData.confirmPassword) {
@@ -75,19 +69,31 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
     
     if (!validateForm()) {
       return;
     }
 
-    const { confirmPassword, ...registrationData } = formData;
-    await register(registrationData);
+    setLoading(true);
+
+    try {
+      const { confirmPassword, ...registrationData } = formData;
+      await authAPI.register(registrationData);
+      
+      navigate('/verify-email', { 
+        state: { email: registrationData.email } 
+      });
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6">
-        {/* Header */}
         <div className="text-center space-y-2">
           <div className="mx-auto w-16 h-16 bg-primary rounded-full flex items-center justify-center mb-4">
             <MessageCircle className="w-8 h-8 text-primary-foreground" />
@@ -98,12 +104,11 @@ const Register = () => {
           </p>
         </div>
 
-        {/* Register Card */}
         <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl font-semibold">Create account</CardTitle>
             <CardDescription>
-              Enter your information to get started
+              We'll send you a verification email to get started.
             </CardDescription>
           </CardHeader>
           
@@ -118,18 +123,15 @@ const Register = () => {
                     name="username"
                     type="text"
                     placeholder="Choose a username"
-                    className={`pl-10 ${errors.username ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                    className="pl-10"
                     value={formData.username}
                     onChange={handleChange}
-                    disabled={isLoading}
+                    disabled={loading}
                   />
                 </div>
                 {errors.username && (
                   <p className="text-sm text-destructive">{errors.username}</p>
                 )}
-                <p className="text-xs text-muted-foreground">
-                  3-20 characters, letters, numbers, and underscores only
-                </p>
               </div>
 
               <div className="space-y-2">
@@ -141,10 +143,10 @@ const Register = () => {
                     name="email"
                     type="email"
                     placeholder="Enter your email"
-                    className={`pl-10 ${errors.email ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                    className="pl-10"
                     value={formData.email}
                     onChange={handleChange}
-                    disabled={isLoading}
+                    disabled={loading}
                   />
                 </div>
                 {errors.email && (
@@ -161,18 +163,15 @@ const Register = () => {
                     name="password"
                     type="password"
                     placeholder="Create a password"
-                    className={`pl-10 ${errors.password ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                    className="pl-10"
                     value={formData.password}
                     onChange={handleChange}
-                    disabled={isLoading}
+                    disabled={loading}
                   />
                 </div>
                 {errors.password && (
                   <p className="text-sm text-destructive">{errors.password}</p>
                 )}
-                <p className="text-xs text-muted-foreground">
-                  Minimum 6 characters
-                </p>
               </div>
 
               <div className="space-y-2">
@@ -184,10 +183,10 @@ const Register = () => {
                     name="confirmPassword"
                     type="password"
                     placeholder="Confirm your password"
-                    className={`pl-10 ${errors.confirmPassword ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                    className="pl-10"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    disabled={isLoading}
+                    disabled={loading}
                   />
                 </div>
                 {errors.confirmPassword && (
@@ -196,20 +195,21 @@ const Register = () => {
               </div>
 
               {error && (
-                <div className="p-3 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md">
-                  {error}
-                </div>
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
               )}
             </CardContent>
 
             <CardFooter className="flex flex-col space-y-4">
               <Button
                 type="submit"
-                disabled={isLoading}
+                disabled={loading}
                 className="w-full"
                 size="lg"
               >
-                {isLoading ? (
+                {loading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Creating Account...
@@ -231,13 +231,6 @@ const Register = () => {
             </CardFooter>
           </form>
         </Card>
-
-        {/* Footer */}
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground">
-            By creating an account, you agree to join our community guidelines
-          </p>
-        </div>
       </div>
     </div>
   );

@@ -35,6 +35,18 @@ const userSchema = new mongoose.Schema({
   profilePicture: {
     type: String,
     default: null
+  },
+  isEmailVerified: {
+    type: Boolean,
+    default: false
+  },
+  emailOTP: {
+    type: String,
+    default: null
+  },
+  otpExpires: {
+    type: Date,
+    default: null
   }
 }, {
   timestamps: true
@@ -73,6 +85,10 @@ userSchema.statics.findByCredentials = async function(email, password) {
   
   if (!user) {
     throw new Error('Invalid login credentials');
+  }
+  
+  if (!user.isEmailVerified) {
+    throw new Error('Please verify your email before logging in');
   }
   
   const isMatch = await user.comparePassword(password);

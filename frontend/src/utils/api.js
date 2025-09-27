@@ -43,6 +43,8 @@ export const authAPI = {
   logout: () => api.post('/auth/logout'),
   getProfile: () => api.get('/auth/me'),
   getUsers: () => api.get('/auth/users'),
+  verifyEmail: (email, otp) => api.post('/auth/verify-email', { email, otp }),
+  resendOTP: (email) => api.post('/auth/resend-otp', { email }),
 };
 
 // Messages API calls

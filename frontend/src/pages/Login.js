@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card";
-import { MessageCircle, Loader2, Mail, Lock } from "lucide-react";
+import { MessageCircle, Loader2, Mail, Lock, AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "../components/ui/alert";
+import { authAPI } from '../utils/api';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -13,8 +15,12 @@ const Login = () => {
     password: '',
   });
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [needsVerification, setNeedsVerification] = useState(false);
   
-  const { login, isLoading, error } = useAuth();
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,6 +41,8 @@ const Login = () => {
   const validateForm = () => {
     const newErrors = {};
 
+    console.log('Validating form with data:', formData); // Debug log
+
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
@@ -45,18 +53,56 @@ const Login = () => {
       newErrors.password = 'Password is required';
     }
 
+    console.log('Validation errors:', newErrors); // Debug log
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setNeedsVerification(false);
+    
+    console.log('Form data:', formData); // Debug log
     
     if (!validateForm()) {
+      console.log('Form validation failed'); // Debug log
       return;
     }
 
-    await login(formData);
+    console.log('Attempting to login...'); // Debug log
+    setLoading(true);
+
+    try {
+      const result = await login(formData);
+      console.log('Login result:', result); // Debug log
+      
+      if (result.success) {
+        navigate('/dashboard');
+      } else {
+        // Handle specific error cases
+        if (result.error?.includes('not verified')) {
+          setNeedsVerification(true);
+        }
+        setError(result.error || 'Login failed. Please try again.');
+      }
+    } catch (err) {
+      console.error('Login error:', err); // Debug log
+      setError('Login failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    try {
+      await authAPI.resendOTP(formData.email);
+      navigate('/verify-email', { 
+        state: { email: formData.email } 
+      });
+    } catch (err) {
+      setError('Failed to resend verification email. Please try again.');
+    }
   };
 
   return (
@@ -96,7 +142,7 @@ const Login = () => {
                     className={`pl-10 ${errors.email ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                     value={formData.email}
                     onChange={handleChange}
-                    disabled={isLoading}
+                    disabled={loading}
                   />
                 </div>
                 {errors.email && (
@@ -116,7 +162,7 @@ const Login = () => {
                     className={`pl-10 ${errors.password ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                     value={formData.password}
                     onChange={handleChange}
-                    disabled={isLoading}
+                    disabled={loading}
                   />
                 </div>
                 {errors.password && (
@@ -125,20 +171,35 @@ const Login = () => {
               </div>
 
               {error && (
-                <div className="p-3 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md">
-                  {error}
-                </div>
+                <Alert variant={needsVerification ? "default" : "destructive"}>
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>
+                    {error}
+                    {needsVerification && (
+                      <div className="mt-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={handleResendVerification}
+                        >
+                          Resend Verification Email
+                        </Button>
+                      </div>
+                    )}
+                  </AlertDescription>
+                </Alert>
               )}
             </CardContent>
 
             <CardFooter className="flex flex-col space-y-4">
               <Button
                 type="submit"
-                disabled={isLoading}
+                disabled={loading}
                 className="w-full"
                 size="lg"
               >
-                {isLoading ? (
+                {loading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Signing in...

@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import EmailVerification from './pages/EmailVerification';
 import Chat from './pages/Chat';
 import RoomDashboard from './pages/RoomDashboard';
 import LoadingSpinner from './components/LoadingSpinner';
@@ -54,6 +55,15 @@ const AppContent = () => {
             element={
               <PublicRoute>
                 <Register />
+              </PublicRoute>
+            } 
+          />
+          
+          <Route 
+            path="/verify-email" 
+            element={
+              <PublicRoute>
+                <EmailVerification />
               </PublicRoute>
             } 
           />
