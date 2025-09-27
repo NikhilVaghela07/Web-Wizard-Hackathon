@@ -1,7 +1,7 @@
 {
-  "name": "realtime-chat-backend",
+  "name": "chatrix-backend",
   "version": "1.0.0",
-  "description": "Backend server for real-time chat application with authentication",
+  "description": "Backend server for Chatrix - real-time chat application with authentication",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

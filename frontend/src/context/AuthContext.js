@@ -148,7 +148,7 @@ export const AuthProvider = ({ children }) => {
       // Connect socket
       socketService.connect(token);
       
-      toast.success('Registration successful! Welcome to ChatApp!');
+      toast.success('Registration successful! Welcome to Chatrix!');
       return { success: true };
       
     } catch (error) {

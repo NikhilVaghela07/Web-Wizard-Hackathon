@@ -1,7 +1,7 @@
 {
-  "name": "realtime-chat-frontend",
+  "name": "chatrix-frontend",
   "version": "1.0.0",
-  "description": "Frontend React application for real-time chat with authentication",
+  "description": "Frontend React application for Chatrix - real-time chat with authentication",
   "private": true,
   "dependencies": {
     "@heroicons/react": "^2.0.18",

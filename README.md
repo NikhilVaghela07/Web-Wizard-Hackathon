@@ -1,4 +1,4 @@
-# 🚀 ChatApp - Professional Real-Time Chat Application
+start# 🚀 Chatrix - Professional Real-Time Chat Application
 
 A beautiful, modern real-time chat application built with the MERN stack and enhanced with **ShadCN UI** components for a truly professional user experience.
 
@@ -72,8 +72,8 @@ A beautiful, modern real-time chat application built with the MERN stack and enh
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/your-username/chatapp.git
-cd chatapp
+git clone https://github.com/your-username/chatrix.git
+cd chatrix
 ```
 
 2. **Install dependencies**
@@ -91,7 +91,7 @@ npm install
 
 Create `.env` file in the `backend` directory:
 ```env
-MONGODB_URI=mongodb://localhost:27017/chatapp
+MONGODB_URI=mongodb://localhost:27017/chatrix
 JWT_SECRET=your_super_secret_jwt_key_change_this_in_production
 PORT=5000
 NODE_ENV=development
