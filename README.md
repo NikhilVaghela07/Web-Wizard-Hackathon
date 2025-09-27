@@ -1,13 +1,68 @@
 # 🚀 Chatrix Hub - Professional Real-Time Chat Application
 
-A beautiful, modern real-time chat application built with the MERN stack and enhanced with **ShadCN UI** components for a truly professional user experience.
+A beautiful, modern real-tim- **Loading States** - Professional loading indicators throughout
+
+## 👥 Team Details
+
+### Team Leader
+**Nikhil Vaghela**   application built with the MERN stack and enhanced with **ShadCN UI** components for a truly professional user experience.
 
 ## 📸 Screenshots
 
-![Register Page](./Screenshots/Screenshot%202025-09-27%20161411.png)
+### Authentication & Registration Flow
+![Register Page](./Screenshots/Register_Page.png)
+*Modern registration form with professional design*
 
+![Email Verification](./Screenshots/Email_Verification_Page.png)
+*Email OTP verification for secure authentication*
 
+![Register Complete](./Screenshots/Register_Complete.png)
+*Registration completion with success feedback*
 
+![Sign In Page](./Screenshots/SignIn_Page.png)
+*Clean and professional login interface*
+
+### User Profile Management
+![Profile Page](./Screenshots/Profile_Page.png)
+*Comprehensive user profile management*
+
+![Profile Picture Upload](./Screenshots/Profile_Picture_Add.png)
+*Profile picture upload during registration*
+
+![Adding Profile](./Screenshots/Adding_Profile_Page_From_Profile.png)
+*Profile editing and management interface*
+
+![Updated Profile](./Screenshots/Updated_Profile_page.png)
+*Updated profile view with all information*
+
+![Security Settings](./Screenshots/My_Profile_Security_Screen.png)
+*Profile security and settings management*
+
+### Chat & Room Features
+![Dashboard](./Screenshots/Dashboard_Page.png)
+*Main dashboard with navigation options*
+
+![Global Chat](./Screenshots/Global_Chat.png)
+*Real-time global chat interface*
+
+![Global Chat Extended](./Screenshots/Global_Chat1.png)
+*Extended view of global chat with multiple users*
+
+### Room Management
+![Create New Room](./Screenshots/Create_New_Room_Screen.png)
+*Room creation interface*
+
+![Create Room Details](./Screenshots/Create_New_Room_Screen1.png)
+*Room creation form with details*
+
+![Room Created Successfully](./Screenshots/Room_Creation_Sucessfully.png)
+*Success feedback after room creation*
+
+![After Room Creation](./Screenshots/After_Created_Room_Dashboard.png)
+*Dashboard view after creating a room*
+
+![Join Room](./Screenshots/Join_Room_With_Code.png)
+*Join existing room using invitation code*
 ## ✨ Features
 
 ### 🎨 **Professional UI Design**
@@ -40,7 +95,30 @@ A beautiful, modern real-time chat application built with the MERN stack and enh
 - **Character Counter** - Real-time feedback on message length
 - **Loading States** - Professional loading indicators throughout
 
-## 🛠️ Tech Stack
+## � Team Details
+
+### Team Leader
+**Nikhil Vaghela**  
+- **ID:** 23DCE124  
+- **GitHub:** [@NikhilVaghela07](https://github.com/NikhilVaghela07)
+
+### Team Members
+
+**Femil Ranparia**  
+- **ID:** 23DCE102  
+- **GitHub:** [@FemilRanparia](https://github.com/FemilRanparia)
+
+**Hitarth Shukla**  
+- **ID:** 23DCE112  
+- **Email:** 23dce112@charusat.edu.in  
+- **GitHub:** [@HitarthShukla](https://github.com/HitarthShukla)
+
+**Kaustav Das**  
+- **ID:** 23DCE020  
+- **Email:** 23dce020@charusat.edu.in  
+- **GitHub:** [@kaustav1703](https://github.com/kaustav1703)
+
+## �🛠️ Tech Stack
 
 ### Frontend
 - **React.js 18** - Modern React with hooks and context
